@@ -1,5 +1,8 @@
 package com.example.misteryshopper.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ShopperModel {
 
 
@@ -9,10 +12,12 @@ public class ShopperModel {
     String city;
     String cf;
     String email;
-    String password;
     boolean available;
+    List<HiringModel> hire;
 
     public ShopperModel() {
+        this.hire = new ArrayList<>();
+        available = true;
     }
 
     public String getName() {
@@ -63,19 +68,15 @@ public class ShopperModel {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public boolean isAvailable() {
         return available;
     }
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public void acceptHiring(HiringModel hire){
+        this.hire.add(hire);
     }
 }
