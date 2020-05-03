@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.misteryshopper.activity.RegisterEmployerActivity;
 import com.example.misteryshopper.activity.RegisterShopperActivity;
 import com.example.misteryshopper.activity.ShopperListActivity;
 import com.example.misteryshopper.exception.InvalidParamsException;
@@ -34,13 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(mDbHelper.getmAuth().getCurrentUser() != null){
+            startActivity(new Intent(MainActivity.this,ShopperListActivity.class));
+            finish();
+        }
       userName  = findViewById(R.id.eMailTxt);
       password = findViewById(R.id.pwdTxt);
-
-
-        final Intent toRegister = new Intent(this, RegisterShopperActivity.class);
-        final Intent getLogin = new Intent(this, ShopperListActivity.class);
-
 
         Button ok = findViewById(R.id.enter);
         ok.setOnClickListener(new View.OnClickListener() {
@@ -55,41 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     password.setError("invalid password");
                 }
              try {
-                 mDbHelper.login(user, passwordStr)
-                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                             @Override
-                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                 if (task.isSuccessful()) {
-                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                     builder.setMessage("Login effettuato con successo");
-                                     builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                         @Override
-                                         public void onClick(DialogInterface dialog, int which) {
-                                             startActivity(getLogin);
-                                             finish();
-                                         }
-                                     });
-                                     builder.show();
-                                 } else {
-                                     final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                     builder.setMessage("Username o password errati\nriprova o effettua la registrazione");
-                                     builder.setPositiveButton("registrati", new DialogInterface.OnClickListener() {
-                                         public void onClick(DialogInterface dialog, int id) {
-                                             startActivity(toRegister);
-                                             finish();
-                                         }
-                                     });
-                                     builder.setNeutralButton("riprova", new DialogInterface.OnClickListener() {
-                                         @Override
-                                         public void onClick(DialogInterface dialog, int which) {
+                 mDbHelper.login(user, passwordStr,MainActivity.this);
 
-                                         }
-                                     });
-                                     builder.show();
-
-                                 }
-                             }
-                         });
 
              }catch (InvalidParamsException e){
                  Toast.makeText(MainActivity.this,"invalid params",Toast.LENGTH_LONG).show();
@@ -101,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(toRegister);
+                startActivity(new Intent(MainActivity.this, RegisterEmployerActivity.class));
                 finish();
             }
         });

@@ -2,6 +2,7 @@ package com.example.misteryshopper.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.EmployerModel;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
@@ -35,7 +37,7 @@ public class RegisterEmployerActivity extends AppCompatActivity {
         pIva = findViewById(R.id.pIvaEditTxt);
         regButton = findViewById(R.id.emRegButton);
         email = findViewById(R.id.emEmailEditRegTxt);
-        password = findViewById(R.id.passwordEditRegTxt);
+        password = findViewById(R.id.emPasswordEditTxt);
 
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,13 +48,16 @@ public class RegisterEmployerActivity extends AppCompatActivity {
                 model.setpIva(pIva.getText().toString());
                 String mail = email.getText().toString();
                 String pas = password.getText().toString();
+
                 if(TextUtils.isEmpty(mail) || ! mail.contains("@")){
                      email.setError("mail required");
                 }
+
                 if(TextUtils.isEmpty(pas)){
                     email.setError("password required");
                 }
                 model.seteMail(mail);
+
                 mDbHepler.addToDb(model, mail, pas, new FirebaseDBHelper.DataStatus() {
                     @Override
                     public void dataIsLoaded(List<?> obj, List<String> keys) {
@@ -62,6 +67,7 @@ public class RegisterEmployerActivity extends AppCompatActivity {
                     @Override
                     public void dataIsInserted() {
                         Toast.makeText(RegisterEmployerActivity.this,"inserted succeffull",Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(RegisterEmployerActivity.this, MainActivity.class));
                     }
 
                     @Override

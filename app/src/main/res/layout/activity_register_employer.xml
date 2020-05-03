@@ -1,134 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="60dp"
+    android:background="@drawable/back_shape_color"
     tools:context=".activity.RegisterEmployerActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="100dp"
-        android:orientation="vertical"
-        android:paddingLeft="60dp"
-        android:paddingRight="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/nameEmployerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:width="70dp"
-            android:text="Name" />
-
-        <EditText
-            android:id="@+id/nameEmployerEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/categoryTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:width="70dp"
-            android:text="Category" />
-
-        <EditText
-            android:id="@+id/categoryEditTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/pIvaTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:width="70dp"
-            android:text="IVA" />
-
-        <EditText
-            android:id="@+id/pIvaEditTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text" />
-    </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/nameEmployerText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="18sp"
+                android:textColor="@color/labelAndText"
+                android:text="Name" />
+
+            <EditText
+                android:id="@+id/nameEmployerEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape"
+                android:textColor="@color/labelAndText"
+                android:padding="8dp"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/categoryTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="18sp"
+                android:textColor="@color/labelAndText"
+                android:text="Category" />
+
+            <EditText
+                android:id="@+id/categoryEditTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:background="@drawable/button_shape"
+                android:textColor="@color/labelAndText"
+                android:padding="8dp"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pIvaTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="18sp"
+                android:textColor="@color/labelAndText"
+                android:text="IVA" />
+
+            <EditText
+                android:id="@+id/pIvaEditTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:background="@drawable/button_shape"
+                android:textColor="@color/labelAndText"
+                android:padding="8dp"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/emEmailRegTxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:width="70dp"
+                android:layout_weight="3"
+                android:textSize="18sp"
+                android:textColor="@color/labelAndText"
                 android:text="E-mail" />
 
             <EditText
                 android:id="@+id/emEmailEditRegTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:ems="10"
+                android:background="@drawable/button_shape"
+                android:textColor="@color/labelAndText"
+                android:padding="8dp"
                 android:inputType="textEmailAddress" />
         </LinearLayout>
 
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/emPasswordTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:width="70dp"
-            android:text="Password" />
-
-        <EditText
-            android:id="@+id/emPasswordEditTxt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/emPasswordTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="16sp"
+                android:textColor="@color/labelAndText"
+                android:text="Password" />
+
+            <EditText
+                android:id="@+id/emPasswordEditTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:background="@drawable/button_shape"
+                android:textColor="@color/labelAndText"
+                android:padding="8dp" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/emRegButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="Register"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:textSize="24sp"
+            android:background="@drawable/button_shape"
+            android:textColor="@color/labelAndText"
+            android:text="@string/register" />
+
+
 
 </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>

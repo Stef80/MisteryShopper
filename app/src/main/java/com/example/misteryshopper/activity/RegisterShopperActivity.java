@@ -2,6 +2,7 @@ package com.example.misteryshopper.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.ShopperModel;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
@@ -65,7 +67,7 @@ public class RegisterShopperActivity extends AppCompatActivity {
                     password.setError(getResources().getString(R.string.prompt_password));
                 }
                 shopper.setEmail(email.getText().toString());
-                 if(TextUtils.isEmpty(mail)&& TextUtils.isEmpty(pas))
+                 if(!TextUtils.isEmpty(mail)&& !TextUtils.isEmpty(pas))
                 mDbHelper.addToDb(shopper, mail,pas, new FirebaseDBHelper.DataStatus() {
                     @Override
                     public void dataIsLoaded(List<?> obj, List<String> keys) {
@@ -75,6 +77,7 @@ public class RegisterShopperActivity extends AppCompatActivity {
                     @Override
                     public void dataIsInserted() {
                         Toast.makeText(RegisterShopperActivity.this,"inserted succeffull",Toast.LENGTH_LONG).show();
+                         startActivity(new Intent(RegisterShopperActivity.this, MainActivity.class));
                     }
 
                     @Override
