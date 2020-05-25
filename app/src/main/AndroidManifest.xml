@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShopperProfileActivity"></activity>
+        <activity android:name=".activity.ShopperProfileActivity"></activity>
         <activity android:name=".activity.RegisterEmployerActivity" />
         <activity android:name=".activity.ShopperListActivity" />
         <activity android:name=".activity.RegisterShopperActivity" />

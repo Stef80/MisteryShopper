@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.ShopperModel;
+import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
 
 import java.util.List;
@@ -23,10 +24,11 @@ public class RegisterShopperActivity extends AppCompatActivity {
    private EditText name;
    private EditText surname;
    private EditText address;
+   private EditText city;
    private EditText cf;
    private EditText email;
    private EditText password;
-   private FirebaseDBHelper mDbHelper = FirebaseDBHelper.getInstance()
+   private DBHelper mDbHelper = FirebaseDBHelper.getInstance()
            ;
 
 
@@ -42,6 +44,8 @@ public class RegisterShopperActivity extends AppCompatActivity {
 
         address = findViewById(R.id.addressEditTxt);
 
+        city = findViewById(R.id.cityEditTxt);
+
         email = findViewById(R.id.emailEditRegTxt);
 
         password = findViewById(R.id.passwordEditRegTxt);
@@ -55,16 +59,17 @@ public class RegisterShopperActivity extends AppCompatActivity {
                 shopper.setSurname(surname.getText().toString());
                 shopper.setAddress(address.getText().toString());
                 shopper.setCf(cf.getText().toString());
+                shopper.setCity(city.getText().toString());
                 String mail = email.getText().toString();
                 String pas = password.getText().toString();
                 if(TextUtils.isEmpty(mail)){
-                    email.setError(getResources().getString(R.string.email_not_iserted));
+                    email.setError(getResources().getString(R.string.email_not_inserted));
                 }
                 if(TextUtils.isEmpty(pas)){
-                    password.setError(getResources().getString(R.string.prompt_password));
+                    password.setError(getResources().getString(R.string.invalid_password));
                 }
                 if(pas.length()<=5){
-                    password.setError(getResources().getString(R.string.prompt_password));
+                    password.setError(getResources().getString(R.string.invalid_password_lenght));
                 }
                 shopper.setEmail(email.getText().toString());
                  if(!TextUtils.isEmpty(mail)&& !TextUtils.isEmpty(pas))

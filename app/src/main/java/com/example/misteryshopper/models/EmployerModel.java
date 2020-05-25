@@ -3,15 +3,16 @@ package com.example.misteryshopper.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployerModel {
+public class EmployerModel extends User{
 
     String emName;
     String category;
     String pIva;
-    String eMail;
     List<ShopperModel> employedList;
 
-    public EmployerModel(String emName, String category, String pIva) {
+
+    public EmployerModel(String emName, String category, String pIva,String id,String eMail) {
+        super(eMail,id);
         this.emName = emName;
         this.category = category;
         this.pIva = pIva;
@@ -44,14 +45,6 @@ public class EmployerModel {
 
     public void setpIva(String pIva) {
         this.pIva = pIva;
-    }
-
-    public String geteMail() {
-        return eMail;
-    }
-
-    public void seteMail(String eMail) {
-        this.eMail = eMail;
     }
 
     public void setEmployedList(ShopperModel employedList) {

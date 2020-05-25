@@ -7,7 +7,7 @@ public class HiringModel {
     EmployerModel who;
     String where;
     LocalDate when;
-    Double fee;
+    double fee;
     boolean accepted;
     boolean done;
 }

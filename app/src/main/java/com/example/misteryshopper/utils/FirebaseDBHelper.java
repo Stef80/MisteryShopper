@@ -1,22 +1,26 @@
 package com.example.misteryshopper.utils;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.misteryshopper.MainActivity;
+import com.example.misteryshopper.R;
+import com.example.misteryshopper.activity.RegisterEmployerActivity;
 import com.example.misteryshopper.activity.RegisterShopperActivity;
 import com.example.misteryshopper.activity.ShopperListActivity;
 import com.example.misteryshopper.exception.InvalidParamsException;
 import com.example.misteryshopper.models.EmployerModel;
 import com.example.misteryshopper.models.ShopperModel;
+import com.example.misteryshopper.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,39 +38,31 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirebaseDBHelper {
+public class FirebaseDBHelper implements DBHelper {
 
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
     private FirebaseAuth mAuth;
-    public static FirebaseDBHelper mDbHelper;
+    public static DBHelper mDbHelper;
     List<ShopperModel> shoppers = new ArrayList<>();
+    List<ShopperModel> shopListUpdate = new ArrayList<>();
 
-    public interface DataStatus {
-        void dataIsLoaded(List<? extends Object> obj, List<String> keys);
-
-        void dataIsInserted();
-
-        void dataIsUpdated();
-
-        void dataIsDeleted();
-
-        void dataNotLoaded();
-    }
 
     private FirebaseDBHelper() {
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public static FirebaseDBHelper getInstance() {
+    public static DBHelper getInstance() {
         if (mDbHelper == null) {
             mDbHelper = new FirebaseDBHelper();
         }
         return mDbHelper;
     }
 
+
+    @Override
     public void readShoppers(final DataStatus dataStatus) {
         mReference = mDatabase.getReference("Shopper");
         mReference.addValueEventListener(new ValueEventListener() {
@@ -81,6 +77,7 @@ public class FirebaseDBHelper {
                 }
                 dataStatus.dataIsLoaded(shoppers, kyes);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -88,8 +85,9 @@ public class FirebaseDBHelper {
         });
     }
 
-    public void addToDb(final Object model, String email, String password, final DataStatus status) {
-        if(!email.isEmpty() && !password.isEmpty()) {
+    @Override
+    public void addToDb(final User model, String email, String password, final DataStatus status) {
+        if (!email.isEmpty() && !password.isEmpty()) {
             mAuth.createUserWithEmailAndPassword(email, password).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -99,13 +97,14 @@ public class FirebaseDBHelper {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     String UId = mAuth.getCurrentUser().getUid();
+                    model.setId(UId);
                     if (task.isSuccessful()) {
                         if (model instanceof ShopperModel) {
                             mReference = mDatabase.getReference("Shopper");
                             mDatabase.getReference(UId).setValue("shopper");
                         } else if (model instanceof EmployerModel) {
                             mReference = mDatabase.getReference("Employer");
-                            mDatabase.getReference(UId).setValue("Employer");
+                            mDatabase.getReference(UId).setValue("employer");
                         }
                         mReference.child(UId).setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -122,7 +121,7 @@ public class FirebaseDBHelper {
         }
     }
 
-
+    @Override
     public void login(String user, String password, final Context context) throws InvalidParamsException {
         if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(password))
             mAuth.signInWithEmailAndPassword(user, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -134,26 +133,12 @@ public class FirebaseDBHelper {
                         builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                               context.startActivity(new Intent(context, ShopperListActivity.class));
+                                context.startActivity(new Intent(context, ShopperListActivity.class));
                             }
                         });
                         builder.show();
                     } else {
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage("Username o password errati\nriprova o effettua la registrazione");
-                        builder.setPositiveButton("registrati", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                context.startActivity(new Intent(context, RegisterShopperActivity.class));
-                            }
-                        });
-                        builder.setNeutralButton("riprova", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                        builder.show();
-
+                        createDialog(context);
                     }
                 }
             });
@@ -161,16 +146,97 @@ public class FirebaseDBHelper {
             throw new InvalidParamsException();
     }
 
-    public FirebaseAuth getmAuth() {
-        return mAuth;
-    }
-
+    @Override
     public void signOut() {
         mAuth.signOut();
     }
 
+    @Override
+    public void getShopperByMail(String mail, MyCallback callback) {
+        ShopperModel tmp = new ShopperModel();
+        shopListUpdate.add(tmp);
+        Query query = mDatabase.getReference("Shopper").orderByChild("email").equalTo(mail);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("DATASNAPSHOT", dataSnapshot.toString());
+                for (DataSnapshot node:dataSnapshot.getChildren()) {
+                    shopListUpdate.clear();
+                    ShopperModel shopper = node.getValue(ShopperModel.class);
+                    Log.i("DATA", shopper.toString());
+                    shopListUpdate.add(shopper);
+                }
+
+                Log.i("SNAPSHOTLIST", shopListUpdate.toString());
+                 callback.onCallback(shopListUpdate);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.i("ERROR", databaseError.toString());
+            }
+        });
+    }
+
+    @Override
+    public Object getCurrentUser() {
+      return mAuth.getCurrentUser();
+    }
+/*
+*       List<User> userList = new ArrayList<>();
+       String id =  mAuth.getCurrentUser().getUid();
+       mReference = mDatabase.getReference();
+       mReference.orderByChild("id").equalTo(id).addListenerForSingleValueEvent(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+             User user = dataSnapshot.getValue(User.class);
+             userList.add(user);
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
+       return userList.get(0);
+* */
+
+    private void createDialog(Context context) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_main, null);
+        AlertDialog dialog = builder.create();
+        dialog.setView(dialogView);
+        Button retryBtn = dialogView.findViewById(R.id.retry_button);
+        retryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Button regShopBtn = dialogView.findViewById(R.id.reg_shop_button);
+        regShopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, RegisterShopperActivity.class));
+            }
+        });
+
+        Button regEmpBtn = dialogView.findViewById(R.id.reg_empl_button);
+        regEmpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, RegisterEmployerActivity.class));
+            }
+        });
+        dialog.show();
+
+    }
     //    public Intent selectProfile(String mail){
 //      Query query =  mDatabase.getReference().orderByChild("email").equalTo(mail);
 //      query.
 //    }
+
+
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.EmployerModel;
+import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class RegisterEmployerActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button regButton;
-    private FirebaseDBHelper mDbHepler = FirebaseDBHelper.getInstance();
+    private DBHelper mDbHepler = FirebaseDBHelper.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class RegisterEmployerActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(pas)){
                     email.setError("password required");
                 }
-                model.seteMail(mail);
+                model.setEmail(mail);
 
                 mDbHepler.addToDb(model, mail, pas, new FirebaseDBHelper.DataStatus() {
                     @Override

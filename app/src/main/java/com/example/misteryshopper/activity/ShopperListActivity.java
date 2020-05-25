@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.ShopperModel;
+import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
 import com.example.misteryshopper.utils.RecyclerViewConfig;
 
@@ -22,8 +23,9 @@ import java.util.List;
 public class ShopperListActivity extends AppCompatActivity implements RecyclerViewConfig.OnItemClickListener {
 
     private RecyclerView recyclerView;
-    private FirebaseDBHelper mDbHelper = FirebaseDBHelper.getInstance();
+    private DBHelper mDbHelper = FirebaseDBHelper.getInstance();
     private Toolbar toolbar;
+    private List<ShopperModel> shopperList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class ShopperListActivity extends AppCompatActivity implements RecyclerVi
         mDbHelper.readShoppers(new FirebaseDBHelper.DataStatus() {
             @Override
             public void dataIsLoaded(List<? extends Object> obj, List<String> keys) {
+                shopperList = (List<ShopperModel>) obj;
                 new RecyclerViewConfig().setConfig(recyclerView, ShopperListActivity.this, (List<ShopperModel>) obj,
                         keys,ShopperListActivity.this);
             }
@@ -67,7 +70,8 @@ public class ShopperListActivity extends AppCompatActivity implements RecyclerVi
 
     @Override
     public void onItemClick(int position) {
-        Intent go = new Intent(this, MainActivity.class);
+        Intent go = new Intent(this,ShopperProfileActivity.class);
+        go.putExtra("email",shopperList.get(position).getEmail());
         startActivity(go);
     }
 
@@ -78,6 +82,7 @@ public class ShopperListActivity extends AppCompatActivity implements RecyclerVi
         return super.onCreateOptionsMenu(menu);
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

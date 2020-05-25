@@ -1,6 +1,7 @@
 package com.example.misteryshopper.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.telephony.CellSignalStrength;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.misteryshopper.R;
+import com.example.misteryshopper.activity.ShopperProfileActivity;
 import com.example.misteryshopper.models.ShopperModel;
 
 import java.util.List;
@@ -42,6 +44,7 @@ public class RecyclerViewConfig {
         String key;
         ImageView image;
         OnItemClickListener clickListener;
+
 
 
         public ShopperItemView(@NonNull ViewGroup parent, OnItemClickListener clickListener) {

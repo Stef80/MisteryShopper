@@ -3,7 +3,7 @@ package com.example.misteryshopper.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopperModel {
+public class ShopperModel extends User{
 
 
     String name;
@@ -11,13 +11,25 @@ public class ShopperModel {
     String address;
     String city;
     String cf;
-    String email;
     boolean available;
     List<HiringModel> hire;
+
+
 
     public ShopperModel() {
         this.hire = new ArrayList<>();
         available = true;
+    }
+
+    public ShopperModel(String id, String name, String surname, String address, String city, String cf, String email) {
+        super(email,id);
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.city = city;
+        this.cf = cf;
+        this.hire = new ArrayList<>();
+        this.available = true;
     }
 
     public String getName() {
@@ -78,5 +90,22 @@ public class ShopperModel {
 
     public void acceptHiring(HiringModel hire){
         this.hire.add(hire);
+    }
+
+    @Override
+    public void setId(String id) {
+        super.setId(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ShopperModel{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", cf='" + cf + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

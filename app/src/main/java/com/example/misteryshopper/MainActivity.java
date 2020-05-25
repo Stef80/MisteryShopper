@@ -18,6 +18,7 @@ import com.example.misteryshopper.activity.RegisterEmployerActivity;
 import com.example.misteryshopper.activity.RegisterShopperActivity;
 import com.example.misteryshopper.activity.ShopperListActivity;
 import com.example.misteryshopper.exception.InvalidParamsException;
+import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
     private EditText userName;
     private EditText password;
 
-    private FirebaseDBHelper mDbHelper= FirebaseDBHelper.getInstance();
+    private DBHelper mDbHelper= FirebaseDBHelper.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(mDbHelper.getmAuth().getCurrentUser() != null){
+        if(mDbHelper.getCurrentUser()!= null){
             startActivity(new Intent(MainActivity.this,ShopperListActivity.class));
             finish();
         }
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 String user = userName.getText().toString();
                 String passwordStr = password.getText().toString();
                 if (TextUtils.isEmpty(user) && !user.contains("@")) {
-                    userName.setError(getResources().getString(R.string.email_not_iserted));
+                    userName.setError(getResources().getString(R.string.email_not_inserted));
                 }
                 if(TextUtils.isEmpty(passwordStr)){
                     password.setError("invalid password");
