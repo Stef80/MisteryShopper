@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/toolbar"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/back_shape_color"
+    android:background="@drawable/toolbar_shape_background"
     app:popupTheme="@style/Base.ThemeOverlay.AppCompat.Dark"
     android:theme="@style/Base.ThemeOverlay.AppCompat.Dark">
 </androidx.appcompat.widget.Toolbar>

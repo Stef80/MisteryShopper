@@ -13,6 +13,7 @@ public class ShopperModel extends User{
     String cf;
     boolean available;
     List<HiringModel> hire;
+    List<ShopModel> shops;
 
 
 
@@ -29,6 +30,7 @@ public class ShopperModel extends User{
         this.city = city;
         this.cf = cf;
         this.hire = new ArrayList<>();
+        shops = new ArrayList<>();
         this.available = true;
     }
 
@@ -92,9 +94,8 @@ public class ShopperModel extends User{
         this.hire.add(hire);
     }
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
+    public List<ShopModel> getShops() {
+        return shops;
     }
 
     @Override

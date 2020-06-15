@@ -73,7 +73,7 @@ public class RegisterShopperActivity extends AppCompatActivity {
                 }
                 shopper.setEmail(email.getText().toString());
                  if(!TextUtils.isEmpty(mail)&& !TextUtils.isEmpty(pas))
-                mDbHelper.addToDb(shopper, mail,pas, new FirebaseDBHelper.DataStatus() {
+                mDbHelper.register(shopper, mail,pas, new FirebaseDBHelper.DataStatus() {
                     @Override
                     public void dataIsLoaded(List<?> obj, List<String> keys) {
 
@@ -85,15 +85,6 @@ public class RegisterShopperActivity extends AppCompatActivity {
                          startActivity(new Intent(RegisterShopperActivity.this, MainActivity.class));
                     }
 
-                    @Override
-                    public void dataIsUpdated() {
-
-                    }
-
-                    @Override
-                    public void dataIsDeleted() {
-
-                    }
 
                     @Override
                     public void dataNotLoaded() {

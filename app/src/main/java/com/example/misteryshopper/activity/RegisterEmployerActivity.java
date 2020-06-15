@@ -51,15 +51,15 @@ public class RegisterEmployerActivity extends AppCompatActivity {
                 String pas = password.getText().toString();
 
                 if(TextUtils.isEmpty(mail) || ! mail.contains("@")){
-                     email.setError("mail required");
+                     email.setError(getString(R.string.email_not_inserted));
                 }
 
                 if(TextUtils.isEmpty(pas)){
-                    email.setError("password required");
+                    email.setError(getString(R.string.prompt_password));
                 }
                 model.setEmail(mail);
 
-                mDbHepler.addToDb(model, mail, pas, new FirebaseDBHelper.DataStatus() {
+                mDbHepler.register(model, mail, pas, new FirebaseDBHelper.DataStatus() {
                     @Override
                     public void dataIsLoaded(List<?> obj, List<String> keys) {
 
@@ -69,16 +69,6 @@ public class RegisterEmployerActivity extends AppCompatActivity {
                     public void dataIsInserted() {
                         Toast.makeText(RegisterEmployerActivity.this,"inserted succeffull",Toast.LENGTH_LONG).show();
                         startActivity(new Intent(RegisterEmployerActivity.this, MainActivity.class));
-                    }
-
-                    @Override
-                    public void dataIsUpdated() {
-
-                    }
-
-                    @Override
-                    public void dataIsDeleted() {
-
                     }
 
                     @Override

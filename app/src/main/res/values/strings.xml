@@ -14,4 +14,12 @@
     <string name="login_failed">Login failed</string>
     <string name="register_faild"></string>
     <string name="email_not_inserted">e-mail not inserted \nplese insert a valid mail</string>
+    <string name="no_item_to_show">"List is empty "</string>
+    <string name="id_shop_label">ID SHOP</string>
+    <string name="search_for_hire">search for hire</string>
+    <string name="search">SEARCH</string>
+    <string name="manager_label">MANAGER</string>
+    <string name="city">CITY</string>
+    <string name="address">ADDRESS</string>
+    <string name="add">ADD</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,9 @@ private TextView email;
 private TextView cf;
 private ImageView imgProfile;
 
+private final String ROLE = "role";
+private final String EMAIL = "email";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,30 +44,42 @@ private ImageView imgProfile;
         city =findViewById(R.id.profile_city);
         email = findViewById(R.id.profile_email);
 
-        String mail = getIntent().getStringExtra("email");
-        mDBHelper.getShopperByMail(mail, new DBHelper.MyCallback() {
-             @Override
-             public void onCallback(List<ShopperModel> shopperList) {
-                Log.i("CALLBACK",shopperList.toString());
-                shopperList.add(shopperList.remove(0)) ;
-                 Log.i("CALLBACK2",shopperList.toString());
-                 ShopperModel shopperModel = shopperList.get(0);
-                 Log.i("SHOPPERMODEL",shopperList.toString());
+        String role = getIntent().getStringExtra(ROLE);
+        if(role == null) {
+            String mail = getIntent().getStringExtra(EMAIL);
+            Log.i("SHOPPERPROFILEMAIL", mail);
+            if(mail != null)
+        mDBHelper.getShopperByMail(mail, new DBHelper.DataStatus() {
+            @Override
+            public void dataIsLoaded(List<?> shopperList, List<String> keys) {
+                Log.i("SHOPPERPROFILE", shopperList.get(0).toString());
+                ShopperModel shopperModel = (ShopperModel) shopperList.get(0);
+
+                if(shopperModel != null) {
+                    name.setText(shopperModel.getName());
+                    surname.setText(shopperModel.getSurname());
+                    address.setText(shopperModel.getAddress());
+                    city.setText(shopperModel.getCity());
+                    cf.setText(shopperModel.getCf());
+                    email.setText(shopperModel.getEmail());
+                }
+            }
+
+            @Override
+            public void dataIsInserted() {
+
+            }
+
+            @Override
+            public void dataNotLoaded() {
+
+            }
+        });
+
+        }else{
 
 
-                 if(shopperModel != null) {
-                     name.setText(shopperModel.getName());
-                     surname.setText(shopperModel.getSurname());
-                     address.setText(shopperModel.getAddress());
-                     city.setText(shopperModel.getCity());
-                     cf.setText(shopperModel.getCf());
-                     email.setText(shopperModel.getEmail());
-                 }
-             }
-         });
-
-
-
+    }
 
     }
 }

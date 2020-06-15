@@ -10,6 +10,18 @@
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/emptyState"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="36dp"
+        android:background="@drawable/back_shape_color"
+        android:textColor="@color/labelAndText"
+        android:text="@string/no_item_to_show"/>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_shopper"
             android:layout_width="match_parent"
