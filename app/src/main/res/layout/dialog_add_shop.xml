@@ -50,7 +50,7 @@
         android:layout_weight="1"
         android:id="@+id/shop_address_add"
         android:hint="@string/address"
-        android:inputType="number"
+        android:inputType="text"
         android:textAlignment="center"
         android:layout_margin="30dp"
         android:background="@drawable/back_etext_shape"

@@ -5,14 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.misteryshopper.R;
 import com.example.misteryshopper.exception.InvalidParamsException;
 import com.example.misteryshopper.models.EmployerModel;
-import com.example.misteryshopper.models.ShopModel;
 import com.example.misteryshopper.models.ShopperModel;
+import com.example.misteryshopper.models.StoreModel;
 import com.example.misteryshopper.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,6 +34,8 @@ import java.util.List;
 
 public class FirebaseDBHelper implements DBHelper {
 
+    private static final String STORE = "Store";
+    private final String USER = "User";
     private final String EMPLOYER = "Employer";
     private final String SHOPPER = "Shopper";
     private final String EMAIL = "email";
@@ -60,45 +64,30 @@ public class FirebaseDBHelper implements DBHelper {
 
     @Override
     public void readShoppers(final DataStatus dataStatus) {
-        mReference = mDatabase.getReference(SHOPPER);
-        mReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                shoppers.clear();
-                List<String> kyes = new ArrayList<>();
-                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    kyes.add(keyNode.getKey());
-                    ShopperModel shopper = keyNode.getValue(ShopperModel.class);
-                    shoppers.add(shopper);
-                }
-                dataStatus.dataIsLoaded(shoppers, kyes);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        List<ShopperModel> list = new ArrayList<>();
+        Query query= mDatabase.getReference(USER).orderByChild("role").equalTo(SHOPPER);
+        doQuery(query,ShopperModel.class,list,dataStatus);
     }
 
     @Override
-    public void register(final User model, String email, String password, final DataStatus status) {
+    public void register(final User model, String email, String password, Context context, final DataStatus status) {
         if (!email.isEmpty() && !password.isEmpty()) {
             mAuth.createUserWithEmailAndPassword(email, password).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    status.dataNotLoaded();
+                    Toast.makeText(context,context.getString(R.string.registration_failed),Toast.LENGTH_LONG).show();
                 }
             }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     String UId = mAuth.getCurrentUser().getUid();
                     model.setId(UId);
+                    if(model instanceof EmployerModel) model.setRole(EMPLOYER);
+                    if(model instanceof ShopperModel)  model.setRole(SHOPPER);
                     if (task.isSuccessful()) {
-                      updateUsers(model,UId,status);
-
+                        updateUsers(model, UId, context, status);
                     } else {
-                        status.dataNotLoaded();
+                        Toast.makeText(context,context.getString(R.string.registration_failed),Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -106,19 +95,30 @@ public class FirebaseDBHelper implements DBHelper {
     }
 
     @Override
-    public void login(String user, String password, final Context context, DataStatus status) throws InvalidParamsException {
-        if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(password))
-            mAuth.signInWithEmailAndPassword(user, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    public void login(String userMail, String password, final Context context, DataStatus status) throws InvalidParamsException {
+        if (!TextUtils.isEmpty(userMail) && !TextUtils.isEmpty(password))
+            mAuth.signInWithEmailAndPassword(userMail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         final String uId = task.getResult().getUser().getUid();
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage("Login effettuato con successo");
+                        builder.setMessage(context.getString(R.string.login_success));
                         builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                getRole(uId, context, status);
+                                getRole(uId, new DataStatus() {
+                                    @Override
+                                    public void dataIsLoaded(List<?> obj, List<String> keys) {
+                                        String role = (String) obj.get(0);
+                                        if(role.equals(SHOPPER)){
+                                            getShopperByMail(userMail,status);
+                                        }else{
+                                            getEmployerByMail(userMail,status);
+                                        }
+                                    }
+
+                                });
                             }
                         });
                         builder.show();
@@ -132,25 +132,24 @@ public class FirebaseDBHelper implements DBHelper {
     }
 
     @Override
-    public void signOut() {
+    public void signOut(Context context) {
+        new SharedPrefConfig(context).cancelData();
         mAuth.signOut();
     }
 
     @Override
     public void getShopperByMail(String mail, DataStatus status) {
         List<ShopperModel> shopListUpdate = new ArrayList<>();
-        Query query = mDatabase.getReference(SHOPPER).orderByChild(EMAIL).equalTo(mail);
+        Query query = mDatabase.getReference(USER).orderByChild(EMAIL).equalTo(mail);
         doQuery(query, ShopperModel.class, shopListUpdate, status);
     }
 
     @Override
     public void getEmployerByMail(String mail, DataStatus status) {
-        List<EmployerModel> listUpdate = new ArrayList<>();
-        Query query = mDatabase.getReference(EMPLOYER).orderByChild(EMAIL).equalTo(mail);
-        doQuery(query, EmployerModel.class, listUpdate, status);
-
+        List<EmployerModel> ListUpdate = new ArrayList<>();
+        Query query = mDatabase.getReference(USER).orderByChild(EMAIL).equalTo(mail);
+        doQuery(query, EmployerModel.class, ListUpdate, status);
     }
-
 
     @Override
     public Object getCurrentUser() {
@@ -160,83 +159,27 @@ public class FirebaseDBHelper implements DBHelper {
     @Override
     public void getUserById(String UId, DataStatus status) {
         List<User> userList = new ArrayList<>();
-        mReference = mDatabase.getReference();
+        mReference = mDatabase.getReference(USER);
         Query query = mReference.orderByChild("id").equalTo(UId);
         doQuery(query, User.class, userList, status);
     }
 
 
     @Override
-    public void getRole(String uId, Context context, DataStatus status) {
-        List<String> role = new ArrayList<>();
-        Query query = mDatabase.getReference(uId);
-        doQuery(query, String.class, role, status);
-    }
-
-    @Override
-    public void readShopsOfSpecificUser(String UId, DataStatus status) {
-        List<ShopModel> shops = new ArrayList<>();
-         getUserById(UId, new DataStatus() {
-             @Override
-             public void dataIsLoaded(List<?> obj, List<String> keys) {
-                 User user = (User) obj.get(0);
-                 if(user instanceof EmployerModel){
-                     EmployerModel employer = (EmployerModel) user;
-                     shops.addAll(employer.getShops());
-                 }else if(user instanceof ShopperModel){
-                     ShopperModel shopper = (ShopperModel) user;
-                     shops.addAll(shopper.getShops());
-                 }
-
-                 status.dataIsLoaded(shops,keys);
-             }
-
-             @Override
-             public void dataIsInserted() {
-
-             }
-
-             @Override
-             public void dataNotLoaded() {
-
-             }
-         });
-    }
-
-    @Override
-    public void updateUsers(User model, String UId, DataStatus status) {
-        if (model instanceof ShopperModel) {
-            mReference = mDatabase.getReference(SHOPPER);
-        } else if (model instanceof EmployerModel) {
-            mReference = mDatabase.getReference(EMPLOYER);
-        }
-        mReference.child(UId).setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                status.dataIsInserted();
-            }
-        });
-    }
-
-
-    private void doQuery(Query query, Class myClass, List listUpdate, DataStatus status) {
-        List<String> keys = new ArrayList<>();
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getRole(String uId, DataStatus status) {
+        List<String> roleList = new ArrayList<>();
+        Query query = mDatabase.getReference(USER).orderByChild("id").equalTo(uId);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listUpdate.clear();
-               if( dataSnapshot.hasChildren()) {
-                   for (DataSnapshot node : dataSnapshot.getChildren()) {
-                       keys.add(node.getKey());
-                       listUpdate.add(node.getValue(myClass));
-                   }
-               }else {
-                   keys.add(dataSnapshot.getKey());
-                   listUpdate.add(dataSnapshot.getValue(myClass));
+                roleList.clear();
+                for (DataSnapshot node:dataSnapshot.getChildren()) {
+                    User user = node.getValue(User.class);
+                    String role = user.getRole();
+                    roleList.add(role);
 
-               }
-                Log.i("QUERYLIST", listUpdate.toString());
-                status.dataIsLoaded(listUpdate, keys);
+                }
+                status.dataIsLoaded(roleList, null);
             }
 
             @Override
@@ -246,11 +189,66 @@ public class FirebaseDBHelper implements DBHelper {
         });
     }
 
+    @Override
+    public void readStoreOfSpecificUser(String UId, DataStatus status) {
+        List<StoreModel> storeList =new ArrayList<>();
+        mReference = mDatabase.getReference(STORE);
+        Query query = mReference.orderByChild("idEmployer").equalTo(UId);
+        doQuery(query,StoreModel.class,storeList,status);
+    }
 
-    //    public Intent selectProfile(String mail){
-//      Query query =  mDatabase.getReference().orderByChild("email").equalTo(mail);
-//      query.
-//    }
+    @Override
+    public void addStoreOfScificId(StoreModel model, DataStatus status) {
+     mReference = mDatabase.getReference(STORE);
+     if(!model.getIdStore().equals(""))
+     mReference.child(model.getIdStore()).setValue(model)
+             .addOnFailureListener(x -> status.dataIsLoaded(null,null))
+             .addOnSuccessListener(x -> status.dataIsLoaded(new ArrayList<StoreModel>(1),null));
+     else
+         status.dataIsLoaded(null,null);
+    }
 
+
+    @Override
+    public void updateUsers(User model, String UId, Context context, DataStatus status) {
+            mReference = mDatabase.getReference(USER);
+            mReference.child(UId).setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(context,context.getString(R.string.add),Toast.LENGTH_LONG).show();
+                    status.dataIsLoaded(null,null);
+                }
+            });
+    }
+
+
+
+
+    private void doQuery(Query query, Class myClass, List listUpdate, DataStatus status) {
+        List<String> keys = new ArrayList<>();
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listUpdate.clear();
+                if (dataSnapshot.hasChildren()) {
+                    for (DataSnapshot node : dataSnapshot.getChildren()) {
+                        keys.add(node.getKey());
+                        listUpdate.add(node.getValue(myClass));
+                    }
+                } else {
+                    keys.add(dataSnapshot.getKey());
+                    listUpdate.add(dataSnapshot.getValue(myClass));
+                }
+                Log.i("QUERYLIST", listUpdate.toString());
+                status.dataIsLoaded(listUpdate, keys);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.i("ERROR", databaseError.toString());
+            }
+        });
+
+    }
 
 }

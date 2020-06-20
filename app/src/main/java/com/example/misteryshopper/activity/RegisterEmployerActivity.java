@@ -58,22 +58,11 @@ public class RegisterEmployerActivity extends AppCompatActivity {
                     email.setError(getString(R.string.prompt_password));
                 }
                 model.setEmail(mail);
-
-                mDbHepler.register(model, mail, pas, new FirebaseDBHelper.DataStatus() {
+                mDbHepler.register(model, mail, pas,getApplicationContext(), new FirebaseDBHelper.DataStatus() {
                     @Override
                     public void dataIsLoaded(List<?> obj, List<String> keys) {
-
-                    }
-
-                    @Override
-                    public void dataIsInserted() {
                         Toast.makeText(RegisterEmployerActivity.this,"inserted succeffull",Toast.LENGTH_LONG).show();
                         startActivity(new Intent(RegisterEmployerActivity.this, MainActivity.class));
-                    }
-
-                    @Override
-                    public void dataNotLoaded() {
-
                     }
                 });
             }

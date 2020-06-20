@@ -73,22 +73,11 @@ public class RegisterShopperActivity extends AppCompatActivity {
                 }
                 shopper.setEmail(email.getText().toString());
                  if(!TextUtils.isEmpty(mail)&& !TextUtils.isEmpty(pas))
-                mDbHelper.register(shopper, mail,pas, new FirebaseDBHelper.DataStatus() {
+                mDbHelper.register(shopper, mail,pas, getApplicationContext(), new FirebaseDBHelper.DataStatus() {
                     @Override
                     public void dataIsLoaded(List<?> obj, List<String> keys) {
-
-                    }
-
-                    @Override
-                    public void dataIsInserted() {
-                        Toast.makeText(RegisterShopperActivity.this,"inserted succeffull",Toast.LENGTH_LONG).show();
-                         startActivity(new Intent(RegisterShopperActivity.this, MainActivity.class));
-                    }
-
-
-                    @Override
-                    public void dataNotLoaded() {
-                        Toast.makeText(RegisterShopperActivity.this,"data not inerted",Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(RegisterShopperActivity.this, MainActivity.class));
+                        finish();
                     }
                 });
             }

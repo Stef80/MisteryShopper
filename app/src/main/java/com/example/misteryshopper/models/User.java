@@ -4,12 +4,14 @@ public class User {
 
     String email;
     String id;
+    String role;
 
 
     public  User(){}
-    public User(String email, String id) {
+    public User(String email, String id,String role) {
         this.email = email;
         this.id = id;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -26,5 +28,13 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

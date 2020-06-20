@@ -31,7 +31,7 @@
                 android:id="@+id/image_building"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1.2"
                 android:layout_marginStart="10dp"
                 android:layout_margin="8dp"
                 app:srcCompat="@drawable/ic_launcher_foreground" />
@@ -51,7 +51,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:text="@string/id_shop_label"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="8dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                     android:layout_weight="1"
                     android:id="@+id/id_shop"
                     android:text="000000"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="8dp"/>
 
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="XXXXXX"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:id="@+id/city_shop_text"/>
 
                 <TextView
@@ -99,7 +99,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="XXXXXX"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:id="@+id/address_shop_text"/>
 
 
@@ -108,14 +108,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:layout_weight="1">
+                    android:layout_weight="0.9">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="@string/search_for_hire"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:id="@+id/button_shop_text"/>
 
 
@@ -123,7 +123,7 @@
                         android:id="@+id/button_serch_shop"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.8"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
                         android:layout_marginRight="16dp"

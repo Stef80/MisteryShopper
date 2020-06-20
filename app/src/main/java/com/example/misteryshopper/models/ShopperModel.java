@@ -12,25 +12,21 @@ public class ShopperModel extends User{
     String city;
     String cf;
     boolean available;
-    List<HiringModel> hire;
-    List<ShopModel> shops;
+
 
 
 
     public ShopperModel() {
-        this.hire = new ArrayList<>();
         available = true;
     }
 
-    public ShopperModel(String id, String name, String surname, String address, String city, String cf, String email) {
-        super(email,id);
+    public ShopperModel(String id, String name, String surname, String address, String city, String cf, String email,String role) {
+        super(email,id,role);
         this.name = name;
         this.surname = surname;
         this.address = address;
         this.city = city;
         this.cf = cf;
-        this.hire = new ArrayList<>();
-        shops = new ArrayList<>();
         this.available = true;
     }
 
@@ -90,14 +86,6 @@ public class ShopperModel extends User{
         this.available = available;
     }
 
-    public void acceptHiring(HiringModel hire){
-        this.hire.add(hire);
-    }
-
-    public List<ShopModel> getShops() {
-        return shops;
-    }
-
     @Override
     public String toString() {
         return "ShopperModel{" +
@@ -106,7 +94,10 @@ public class ShopperModel extends User{
                 ", address='" + address + '\'' +
                 ", city='" + city + '\'' +
                 ", cf='" + cf + '\'' +
+                ", available=" + available +
                 ", email='" + email + '\'' +
+                ", id='" + id + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

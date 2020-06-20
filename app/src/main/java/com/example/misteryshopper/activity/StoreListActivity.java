@@ -15,23 +15,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
-import com.example.misteryshopper.models.ShopModel;
-import com.example.misteryshopper.models.ShopperModel;
+import com.example.misteryshopper.models.StoreModel;
 import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.DialogUIHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
 import com.example.misteryshopper.utils.RecyclerViewConfig;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.misteryshopper.utils.SharedPrefConfig;
+
 
 import java.util.List;
 
-public class ShopsListActivity extends AppCompatActivity implements RecyclerViewConfig.OnItemClickListener {
+public class StoreListActivity extends AppCompatActivity {
 
     private DBHelper mDBHelper = FirebaseDBHelper.getInstance();
     private RecyclerView recyclerView;
-    private List<ShopModel> shops;
-    private List<String> keys;
     private Toolbar toolbar;
+    private List<StoreModel> storeModelList;
     private TextView textEmpty;
     String userID;
 
@@ -44,33 +43,22 @@ public class ShopsListActivity extends AppCompatActivity implements RecyclerView
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.app_name).toUpperCase());
 
-        userID = ((FirebaseUser)mDBHelper.getCurrentUser()).getUid();
-
+        userID = new SharedPrefConfig(getApplicationContext()).readLoggedUser().getId();
         recyclerView = findViewById(R.id.recyclerView_shopper);
         textEmpty = findViewById(R.id.emptyState);
-        if(shops == null){
-            textEmpty.setVisibility(View.VISIBLE);
-        }else {
-            mDBHelper.readShopsOfSpecificUser(userID, new DBHelper.DataStatus() {
+            mDBHelper.readStoreOfSpecificUser(userID, new DBHelper.DataStatus() {
                 @Override
-                public void dataIsLoaded(List<?> obj, List<String> keyses) {
-                    new RecyclerViewConfig().setConfigShoppersList(recyclerView, ShopsListActivity.this, (List<ShopModel>) shops,
-                            keys, ShopsListActivity.this);
+                public void dataIsLoaded(List<?> obj, List<String> keys) {
+                    if(obj.isEmpty())
+                        textEmpty.setVisibility(View.VISIBLE);
+                    else
+                    new RecyclerViewConfig().setConfigList(recyclerView, StoreListActivity.this, (List<StoreModel>) obj,
+                            keys, null);
+                    textEmpty.setVisibility(View.GONE);
                 }
-
-                @Override
-                public void dataIsInserted() {
-
-                }
-
-                @Override
-                public void dataNotLoaded() {
-
-                }
-
             });
 
-        }
+
     }
 
     @Override
@@ -86,22 +74,22 @@ public class ShopsListActivity extends AppCompatActivity implements RecyclerView
                 item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        ShopModel model = new ShopModel();
-                        DialogUIHelper.createHireDialog(model,ShopsListActivity.this);
-                        return false;
+                        StoreModel model = new StoreModel();
+                        DialogUIHelper.createHireDialog(model, StoreListActivity.this);
+                        return true;
                     }
                 });
                 break;
             case R.id.log_out:
-                mDBHelper.signOut();
+                mDBHelper.signOut(this);
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemClick(int position) {
-
-    }
+//    @Override
+//    public void onItemClick(int position) {
+//
+//    }
 }

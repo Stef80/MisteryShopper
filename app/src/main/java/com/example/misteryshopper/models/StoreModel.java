@@ -1,22 +1,15 @@
 package com.example.misteryshopper.models;
 
-public class ShopModel {
+public class StoreModel {
 
-    String id;
+
     String idStore;
+    String idEmployer;
     String manager;
     String city;
     String address;
 
-    public ShopModel() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public StoreModel() {
     }
 
     public String getIdStore() {
@@ -29,6 +22,14 @@ public class ShopModel {
 
     public String getManager() {
         return manager;
+    }
+
+    public String getIdEmployer() {
+        return idEmployer;
+    }
+
+    public void setIdEmployer(String idEmployer) {
+        this.idEmployer = idEmployer;
     }
 
     public void setManager(String manager) {

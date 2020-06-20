@@ -1,14 +1,10 @@
 package com.example.misteryshopper;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,16 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.misteryshopper.activity.RegisterEmployerActivity;
-import com.example.misteryshopper.activity.RegisterShopperActivity;
 import com.example.misteryshopper.activity.ShopperListActivity;
 import com.example.misteryshopper.activity.ShopperProfileActivity;
-import com.example.misteryshopper.activity.ShopsListActivity;
+import com.example.misteryshopper.activity.StoreListActivity;
 import com.example.misteryshopper.exception.InvalidParamsException;
+import com.example.misteryshopper.models.User;
 import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.misteryshopper.utils.SharedPrefConfig;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
@@ -33,9 +27,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SHOPPER = "shopper";
+    private static final String SHOPPER = "Shopper";
+    private static final String EMPLOYER = "Employer";
     private EditText userName;
     private EditText password;
+    SharedPrefConfig sharedPrefConfig;
 
     private DBHelper mDbHelper= FirebaseDBHelper.getInstance();
 
@@ -43,25 +39,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(mDbHelper.getCurrentUser()!= null){
-            mDbHelper.getRole(((FirebaseUser) mDbHelper.getCurrentUser()).getUid(), this, new DBHelper.DataStatus() {
-                @Override
-                public void dataIsLoaded(List<?> obj, List<String> keys) {
-                    String role = (String) obj.get(0);
-                   goByRole(role);
-                }
 
-                @Override
-                public void dataIsInserted() {
-
-                }
-
-                @Override
-                public void dataNotLoaded() {
-
-                }
-            });
-            startActivity(new Intent(MainActivity.this,ShopperListActivity.class));
+        sharedPrefConfig = new SharedPrefConfig(getApplicationContext());
+        if(sharedPrefConfig.readLoggedUser() != null){
+          User user = sharedPrefConfig.readLoggedUser();
+                    String role = user.getRole();
+                    goByRole(role);
+        // startActivity(new Intent(MainActivity.this,ShopperListActivity.class));
             finish();
         }
       userName  = findViewById(R.id.eMailTxt);
@@ -83,18 +67,9 @@ public class MainActivity extends AppCompatActivity {
                  mDbHelper.login(user, passwordStr, MainActivity.this, new DBHelper.DataStatus() {
                      @Override
                      public void dataIsLoaded(List<?> obj, List<String> keys) {
-                      goByRole((String) obj.get(0));
-                     }
+                       sharedPrefConfig.writeLoggedUser((User) obj.get(0));
 
-                     @Override
-                     public void dataIsInserted() {
-
-                     }
-
-
-                     @Override
-                     public void dataNotLoaded() {
-
+                       goByRole(sharedPrefConfig.readLoggedUser().getRole());
                      }
                  });
 
@@ -116,13 +91,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goByRole(String role){
-        Log.i("SHOPPERROLE :", role);
         if(role.equals(SHOPPER)){
             Intent intent = new Intent(MainActivity.this, ShopperProfileActivity.class);
-            intent.putExtra("role", role);
+            intent.putExtra("email",sharedPrefConfig.readLoggedUser().getEmail());
             startActivity(intent);
-        }else{
-            startActivity(new Intent(MainActivity.this, ShopsListActivity.class));
+        }else if(role.equals(EMPLOYER)){
+            startActivity(new Intent(MainActivity.this, StoreListActivity.class));
         }
     }
+
 }

@@ -12,7 +12,7 @@
     <string name="invalid_password_lenght">Password must be >5 characters</string>
     <string name="invalid_password">Password required</string>
     <string name="login_failed">Login failed</string>
-    <string name="register_faild"></string>
+    <string name="registration_failed">regitration failed</string>
     <string name="email_not_inserted">e-mail not inserted \nplese insert a valid mail</string>
     <string name="no_item_to_show">"List is empty "</string>
     <string name="id_shop_label">ID SHOP</string>
@@ -22,4 +22,8 @@
     <string name="city">CITY</string>
     <string name="address">ADDRESS</string>
     <string name="add">ADD</string>
+    <string name="shop_added">"shop added "</string>
+    <string name="login_success">login success</string>
+    <string name="shop_not_added">shop didn\'t add , plz try again</string>
+    <string name="field_required">required field</string>
 </resources>

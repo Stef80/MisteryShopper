@@ -1,11 +1,8 @@
 package com.example.misteryshopper.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -19,6 +16,7 @@ import com.example.misteryshopper.models.ShopperModel;
 import com.example.misteryshopper.utils.DBHelper;
 import com.example.misteryshopper.utils.FirebaseDBHelper;
 import com.example.misteryshopper.utils.RecyclerViewConfig;
+import com.example.misteryshopper.utils.SharedPrefConfig;
 
 import java.util.List;
 
@@ -44,18 +42,8 @@ public class ShopperListActivity extends AppCompatActivity implements RecyclerVi
             @Override
             public void dataIsLoaded(List<? extends Object> obj, List<String> keys) {
                 shopperList = (List<ShopperModel>) obj;
-                new RecyclerViewConfig().setConfigShoppersList(recyclerView, ShopperListActivity.this, (List<ShopperModel>) obj,
+                new RecyclerViewConfig().setConfigList(recyclerView, ShopperListActivity.this, (List<ShopperModel>) obj,
                         keys,ShopperListActivity.this);
-            }
-
-            @Override
-            public void dataIsInserted() {
-
-            }
-
-            @Override
-            public void dataNotLoaded() {
-
             }
         });
     }
@@ -80,10 +68,9 @@ public class ShopperListActivity extends AppCompatActivity implements RecyclerVi
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()){
             case R.id.log_out:
-                mDbHelper.signOut();
+                mDbHelper.signOut(this);
                 startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 finish();
                 break;

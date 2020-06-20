@@ -2,19 +2,28 @@ package com.example.misteryshopper.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.activity.RegisterEmployerActivity;
 import com.example.misteryshopper.activity.RegisterShopperActivity;
-import com.example.misteryshopper.models.ShopModel;
+import com.example.misteryshopper.models.EmployerModel;
+import com.example.misteryshopper.models.StoreModel;
+
+import java.util.List;
 
 public class DialogUIHelper {
+
+    private static DBHelper mDBHelper = FirebaseDBHelper.getInstance();
 
 
     public static void createRegistationDialog(Context context) {
@@ -50,7 +59,7 @@ public class DialogUIHelper {
 
     }
 
-    public static void createHireDialog(final ShopModel model, Context context){
+    public static void createHireDialog(final StoreModel model, Context context) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -66,12 +75,43 @@ public class DialogUIHelper {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.setIdStore(idShop.getText().toString());
+                String id = idShop.getText().toString();
+                String managerStr = manager.getText().toString();
+                String cityStr = city.getText().toString();
+                String adr = address.getText().toString();
+                if(TextUtils.isEmpty(id))
+                    idShop.setError(context.getString(R.string.field_required));
+                if(TextUtils.isEmpty(managerStr))
+                    manager.setError(context.getString(R.string.field_required));
+                if(TextUtils.isEmpty(cityStr))
+                    city.setError(context.getString(R.string.field_required));
+                if(TextUtils.isEmpty(adr))
+                    address.setError(context.getString(R.string.field_required));
+                model.setIdStore(id);
                 model.setManager(manager.getText().toString());
                 model.setCity(city.getText().toString());
                 model.setAddress(address.getText().toString());
+                EmployerModel user = (EmployerModel) new SharedPrefConfig(context).readLoggedUser();
+                Log.i("USERINDIALOG", user.toString());
+                model.setIdEmployer(user.getId());
+             if(!(TextUtils.isEmpty(id) && TextUtils.isEmpty(managerStr) && TextUtils.isEmpty(cityStr) && TextUtils.isEmpty(adr))) {
+                 mDBHelper.addStoreOfScificId(model, new DBHelper.DataStatus() {
+                     @Override
+                     public void dataIsLoaded(List<?> obj, List<String> keys) {
+                         if (obj != null) {
+                             Toast.makeText(context, context.getString(R.string.shop_added), Toast.LENGTH_LONG).show();
+                             dialog.dismiss();
+                         } else {
+                             Toast.makeText(context, context.getString(R.string.shop_not_added), Toast.LENGTH_LONG).show();
+                             idShop.setText("");
+                             manager.setText("");
+                             city.setText("");
+                             address.setText("");
+                         }
+                     }
 
-
+                 });
+             }
             }
         });
         dialog.show();

@@ -7,6 +7,8 @@
     android:background="@drawable/back_shape_color"
     tools:context=".activity.ShopperProfileActivity">
 
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar_profile"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
