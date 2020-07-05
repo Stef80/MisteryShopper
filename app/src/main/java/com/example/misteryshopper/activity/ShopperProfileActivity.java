@@ -65,7 +65,6 @@ private final String EMAIL = "email";
             public void dataIsLoaded(List<?> shopperList, List<String> keys) {
                 Log.i("SHOPPERPROFILE", shopperList.get(0).toString());
                 ShopperModel shopperModel = (ShopperModel) shopperList.get(0);
-
                 if(shopperModel != null) {
                     name.setText(shopperModel.getName());
                     surname.setText(shopperModel.getSurname());
@@ -82,7 +81,6 @@ private final String EMAIL = "email";
         });
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

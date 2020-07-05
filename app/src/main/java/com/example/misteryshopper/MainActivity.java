@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     mDbHelper.login(user, passwordStr, MainActivity.this, new DBHelper.DataStatus() {
                         @Override
                         public void dataIsLoaded(List<?> obj, List<String> keys) {
-                            mDbHelper.addToketoUser((User) obj.get(0), MainActivity.this);
+                            mDbHelper.addTokenToUser((User) obj.get(0), MainActivity.this);
                             sharedPrefConfig.writeLoggedUser((User) obj.get(0));
                             goByRole(((User)obj.get(0)).getRole());
                         }

@@ -43,4 +43,7 @@
     <string name="notification_of_employment">Notification of employment</string>
     <string name="details">Expand to see detailes!</string>
     <string name="show">show</string>
+    <string name="response_notification">shopper response</string>
+    <string name="notification_response">request.</string>
+    <string name="notification_has">has</string>
 </resources>

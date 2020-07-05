@@ -173,7 +173,7 @@ public class DialogUIHelper {
                                Log.i("DILAOGTOKEN", (String) obj1.get(0));
                                MessageCreationService.buildMessage(context, (String) obj1.get(0),
                                        context.getString(R.string.notification_of_employment), model.getCity() + "\n" + model.getAddress()
-                                       , dateStr, String.valueOf(feeNumber), model.getEmployerName());
+                                       , dateStr, String.valueOf(feeNumber), model.getEmployerName(),idEmployer);
                            });
                            dialog.dismiss();
                        }

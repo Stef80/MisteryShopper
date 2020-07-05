@@ -59,6 +59,7 @@ public class SharedPrefConfig {
     public void cancelData() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
+
         editor.commit();
     }
 }

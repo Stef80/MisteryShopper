@@ -239,7 +239,7 @@ public class FirebaseDBHelper implements DBHelper {
 
 
     @Override
-    public void addToketoUser(User user, Context context) {
+    public void addTokenToUser(User user, Context context) {
         mFirebaseId.getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -258,6 +258,29 @@ public class FirebaseDBHelper implements DBHelper {
         Log.i("MAILDB",mail);
         List<String> tokens = new ArrayList<>();
         mDatabase.getReference().child(USER).orderByChild("email").equalTo(mail).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot node:snapshot.getChildren()) {
+                    User user = node.getValue(User.class);
+                    tokens.add(user.getToken());
+                    Log.i("TOKENS", tokens.toString());
+                }
+
+
+                status.dataIsLoaded(tokens, null);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void getTokenById(String id, DataStatus status) {
+        List<String> tokens = new ArrayList<>();
+        mDatabase.getReference().child(USER).orderByChild("id").equalTo(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot node:snapshot.getChildren()) {

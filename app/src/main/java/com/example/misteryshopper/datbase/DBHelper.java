@@ -36,9 +36,11 @@ public interface DBHelper {
 
     public void addStoreOfScificId(StoreModel model,DataStatus status);
 
-    void addToketoUser(User user, Context context);
+    void addTokenToUser(User user, Context context);
 
     void getTokenbyMail(String mail,DataStatus status);
+
+    void getTokenById(String id,DataStatus status);
 
     void addHiringModel(HiringModel model, DataStatus dataStatus);
 

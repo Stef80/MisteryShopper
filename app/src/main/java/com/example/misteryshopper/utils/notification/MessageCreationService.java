@@ -11,19 +11,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,18 +26,26 @@ public class MessageCreationService {
     private static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
 
 
+    public static void buildMessage(Context context,String token, String notificationTitle,String message,String response){
+          buildMessage(context, token, notificationTitle, message,null, response,null,null);
+    }
 
-    public static void buildMessage(Context context,String token, String notificationTitle, String place , String when, String fee, String eName) {
+    public static void buildMessage(Context context,String token, String notificationTitle, String place , String when, String fee, String eName,String empId) {
         JSONObject notification = new JSONObject();
         JSONObject body = new JSONObject();
-
         try {
             notification.put("to","topics"+token);
             body.put("title", notificationTitle);
-            body.put("place",place);
-            body.put("when", when);
-            body.put("fee",fee);
-            body.put("eName",eName);
+            if(when == null){
+                body.put("sName", place);
+                body.put("outcome",fee);
+            }else {
+                body.put("place", place);
+                body.put("id",empId);
+                body.put("when", when);
+                body.put("fee", fee);
+                body.put("eName", eName);
+            }
             notification.put("notification",body);
             notification.put("data",body);
         } catch (JSONException e) {
@@ -77,7 +75,6 @@ public class MessageCreationService {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                Map<String,String> params = new HashMap<>();
-
                 params.put("Authorization","key="+ SERVER_KEY);
                 params.put("Content-Type",CONTENT_TYPE);
                Log.i("SERVICE", params.toString());
