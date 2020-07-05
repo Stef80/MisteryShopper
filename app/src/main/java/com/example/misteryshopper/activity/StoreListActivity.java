@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.StoreModel;
-import com.example.misteryshopper.utils.DBHelper;
+import com.example.misteryshopper.datbase.DBHelper;
 import com.example.misteryshopper.utils.DialogUIHelper;
-import com.example.misteryshopper.utils.FirebaseDBHelper;
+import com.example.misteryshopper.datbase.impl.FirebaseDBHelper;
 import com.example.misteryshopper.utils.RecyclerViewConfig;
 import com.example.misteryshopper.utils.SharedPrefConfig;
 
@@ -52,7 +52,7 @@ public class StoreListActivity extends AppCompatActivity {
                     if(obj.isEmpty())
                         textEmpty.setVisibility(View.VISIBLE);
                     else
-                    new RecyclerViewConfig().setConfigList(recyclerView, StoreListActivity.this, (List<StoreModel>) obj,
+                    new RecyclerViewConfig(null).setConfigList(recyclerView, StoreListActivity.this, (List<StoreModel>) obj,
                             keys, null);
                     textEmpty.setVisibility(View.GONE);
                 }
@@ -75,7 +75,7 @@ public class StoreListActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         StoreModel model = new StoreModel();
-                        DialogUIHelper.createHireDialog(model, StoreListActivity.this);
+                        DialogUIHelper.createStoreDialog(model, StoreListActivity.this);
                         return true;
                     }
                 });

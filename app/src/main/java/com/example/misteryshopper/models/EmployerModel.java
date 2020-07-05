@@ -11,8 +11,8 @@ public class EmployerModel extends User{
 
 
 
-    public EmployerModel(String emName, String category, String pIva,String id,String eMail,String role) {
-        super(eMail,id, role);
+    public EmployerModel(String emName, String category, String pIva,String id,String eMail,String role,String token) {
+        super(eMail,id, role,token);
         this.emName = emName;
         this.category = category;
         this.pIva = pIva;

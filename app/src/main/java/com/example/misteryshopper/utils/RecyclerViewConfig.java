@@ -1,18 +1,23 @@
 package com.example.misteryshopper.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.misteryshopper.R;
+import com.example.misteryshopper.activity.ShopperListActivity;
 import com.example.misteryshopper.models.ShopperModel;
 import com.example.misteryshopper.models.StoreModel;
 
@@ -23,11 +28,16 @@ public class RecyclerViewConfig {
 
 
     private Context context;
-    private ShopperAdapter shopperAdapter;
+    private MyListAdapter shopperAdapter;
+    private Intent intent;
+
+    public RecyclerViewConfig(Intent intent) {
+        this.intent = intent;
+    }
 
     public void setConfigList(RecyclerView recyclerView, Context context, List shoppers, List<String> keys, OnItemClickListener onItemClickListener) {
         this.context = context;
-        shopperAdapter = new ShopperAdapter(shoppers, keys, onItemClickListener);
+        shopperAdapter = new MyListAdapter(shoppers, keys, onItemClickListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(shopperAdapter);
     }
@@ -41,7 +51,7 @@ public class RecyclerViewConfig {
         private TextView available;
         private String key;
         private ImageView image;
-        private Button hireBtnConfirm;
+        private Button hireBtn;
         private OnItemClickListener clickListener;
 
         public ShopperItemView(@NonNull ViewGroup parent, OnItemClickListener clickListener) {
@@ -51,14 +61,8 @@ public class RecyclerViewConfig {
             city = itemView.findViewById(R.id.cityTxt);
             available = itemView.findViewById(R.id.avialable);
             image = itemView.findViewById(R.id.imageView);
-            hireBtnConfirm = itemView.findViewById(R.id.button_confirm);
+            hireBtn = itemView.findViewById(R.id.button_confirm);
 
-            hireBtnConfirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
             this.clickListener = clickListener;
 
             itemView.setOnClickListener(this);
@@ -74,6 +78,16 @@ public class RecyclerViewConfig {
                 available.setVisibility(View.INVISIBLE);
             }
             this.key = key;
+            hireBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle extras = intent.getExtras();
+                    StoreModel store = (StoreModel) extras.get("store");
+                    String idEmployer = extras.getString("id_employer");
+                    Log.i("SHOPPER",shopper.getEmail());
+                    DialogUIHelper.buildDialogHire(context,store,idEmployer,shopper.getEmail());
+                }
+            });
         }
 
 
@@ -92,13 +106,13 @@ public class RecyclerViewConfig {
         private TextView address;
         private TextView manger;
         private Button searchBtn;
-        private List<StoreModel> shops;
+        private TextView employerName;
+        private String key;
         private OnItemClickListener clickListener;
 
         public StoreItemView(@NonNull ViewGroup parent, OnItemClickListener listener) {
             super(LayoutInflater.from(context).inflate(R.layout.store_item_list, parent, false));
             idShop = itemView.findViewById(R.id.id_shop);
-
             city = itemView.findViewById(R.id.city_shop_text);
             manger = itemView.findViewById(R.id.shop_manager_name);
             address = itemView.findViewById(R.id.address_shop_text);
@@ -112,6 +126,17 @@ public class RecyclerViewConfig {
             manger.setText(storeModel.getManager());
             city.setText(storeModel.getCity());
             address.setText(storeModel.getAddress());
+            searchBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent search = new Intent(context, ShopperListActivity.class);
+                    search.putExtra("store",storeModel);
+                    search.putExtra("id_employer", storeModel.getIdEmployer());
+                    //todo mettere extras per selezionare quelli piu vicino
+                    context.startActivity(search);
+                }
+            });
+            this.key = key;
         }
 
 
@@ -123,14 +148,14 @@ public class RecyclerViewConfig {
 
 
 
-    class ShopperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    class MyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private static final int ITEM_STORE = 1 , ITEM_SHOPPER = 0 ;
-        private List<Object> shopperModelList;
+        private List<Object> modelList;
         private List<String> keys;
         private OnItemClickListener clickListener;
 
-        public ShopperAdapter(List shopperModelList, List<String> keys, OnItemClickListener clickListener) {
-            this.shopperModelList = shopperModelList;
+        public MyListAdapter(List shopperModelList, List<String> keys, OnItemClickListener clickListener) {
+            this.modelList = shopperModelList;
             this.keys = keys;
             this.clickListener = clickListener;
         }
@@ -158,11 +183,11 @@ public class RecyclerViewConfig {
            switch (viewType) {
                case ITEM_SHOPPER:
                ShopperItemView itemView = (ShopperItemView) holder;
-               itemView.bind((ShopperModel) shopperModelList.get(position), keys.get(position));
+               itemView.bind((ShopperModel) modelList.get(position), keys.get(position));
                break;
                case ITEM_STORE:
                StoreItemView itemViewStore = (StoreItemView) holder;
-               itemViewStore.bind((StoreModel) shopperModelList.get(position), keys.get(position));
+               itemViewStore.bind((StoreModel) modelList.get(position), keys.get(position));
                break;
            }
 
@@ -170,14 +195,14 @@ public class RecyclerViewConfig {
 
         @Override
         public int getItemCount() {
-            return shopperModelList.size();
+            return modelList.size();
         }
 
 
         public int getItemViewType(int position){
-            if (shopperModelList.get(position) instanceof ShopperModel) {
+            if (modelList.get(position) instanceof ShopperModel) {
                  return ITEM_SHOPPER;
-            } else if (shopperModelList.get(position) instanceof StoreModel) {
+            } else if (modelList.get(position) instanceof StoreModel) {
                return ITEM_STORE;
             }
             return -1;

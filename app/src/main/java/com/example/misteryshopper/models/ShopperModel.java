@@ -20,8 +20,8 @@ public class ShopperModel extends User{
         available = true;
     }
 
-    public ShopperModel(String id, String name, String surname, String address, String city, String cf, String email,String role) {
-        super(email,id,role);
+    public ShopperModel(String id, String name, String surname, String address, String city, String cf, String email,String role,String token) {
+        super(email,id,role,token);
         this.name = name;
         this.surname = surname;
         this.address = address;

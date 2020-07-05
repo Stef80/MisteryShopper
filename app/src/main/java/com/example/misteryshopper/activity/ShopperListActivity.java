@@ -13,10 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.ShopperModel;
-import com.example.misteryshopper.utils.DBHelper;
-import com.example.misteryshopper.utils.FirebaseDBHelper;
+import com.example.misteryshopper.datbase.DBHelper;
+import com.example.misteryshopper.datbase.impl.FirebaseDBHelper;
 import com.example.misteryshopper.utils.RecyclerViewConfig;
-import com.example.misteryshopper.utils.SharedPrefConfig;
 
 import java.util.List;
 
@@ -37,12 +36,14 @@ public class ShopperListActivity extends AppCompatActivity implements RecyclerVi
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.app_name).toUpperCase());
 
+        Intent intent = getIntent();
+
         recyclerView = findViewById(R.id.recyclerView_shopper);
         mDbHelper.readShoppers(new FirebaseDBHelper.DataStatus() {
             @Override
             public void dataIsLoaded(List<? extends Object> obj, List<String> keys) {
                 shopperList = (List<ShopperModel>) obj;
-                new RecyclerViewConfig().setConfigList(recyclerView, ShopperListActivity.this, (List<ShopperModel>) obj,
+                new RecyclerViewConfig(intent).setConfigList(recyclerView, ShopperListActivity.this, (List<ShopperModel>) obj,
                         keys,ShopperListActivity.this);
             }
         });

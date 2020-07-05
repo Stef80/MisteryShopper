@@ -1,4 +1,4 @@
-package com.example.misteryshopper.utils;
+package com.example.misteryshopper.datbase.impl;
 
 
 import android.content.Context;
@@ -8,33 +8,43 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.misteryshopper.R;
+import com.example.misteryshopper.datbase.DBHelper;
 import com.example.misteryshopper.exception.InvalidParamsException;
 import com.example.misteryshopper.models.EmployerModel;
+import com.example.misteryshopper.models.HiringModel;
 import com.example.misteryshopper.models.ShopperModel;
 import com.example.misteryshopper.models.StoreModel;
 import com.example.misteryshopper.models.User;
+import com.example.misteryshopper.utils.DialogUIHelper;
+import com.example.misteryshopper.utils.SharedPrefConfig;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FirebaseDBHelper implements DBHelper {
 
     private static final String STORE = "Store";
+    private static final String HIRE = "Hire";
     private final String USER = "User";
     private final String EMPLOYER = "Employer";
     private final String SHOPPER = "Shopper";
@@ -44,6 +54,7 @@ public class FirebaseDBHelper implements DBHelper {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
     private FirebaseAuth mAuth;
+    private FirebaseInstanceId mFirebaseId;
     public static DBHelper mDbHelper;
     List<ShopperModel> shoppers = new ArrayList<>();
 
@@ -51,8 +62,9 @@ public class FirebaseDBHelper implements DBHelper {
     private FirebaseDBHelper() {
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
+        mFirebaseId = FirebaseInstanceId.getInstance();
     }
+
 
     public static DBHelper getInstance() {
         if (mDbHelper == null) {
@@ -68,6 +80,8 @@ public class FirebaseDBHelper implements DBHelper {
         Query query= mDatabase.getReference(USER).orderByChild("role").equalTo(SHOPPER);
         doQuery(query,ShopperModel.class,list,dataStatus);
     }
+
+
 
     @Override
     public void register(final User model, String email, String password, Context context, final DataStatus status) {
@@ -93,6 +107,8 @@ public class FirebaseDBHelper implements DBHelper {
             });
         }
     }
+
+
 
     @Override
     public void login(String userMail, String password, final Context context, DataStatus status) throws InvalidParamsException {
@@ -131,11 +147,15 @@ public class FirebaseDBHelper implements DBHelper {
             throw new InvalidParamsException();
     }
 
+
+
     @Override
     public void signOut(Context context) {
         new SharedPrefConfig(context).cancelData();
         mAuth.signOut();
     }
+
+
 
     @Override
     public void getShopperByMail(String mail, DataStatus status) {
@@ -144,6 +164,8 @@ public class FirebaseDBHelper implements DBHelper {
         doQuery(query, ShopperModel.class, shopListUpdate, status);
     }
 
+
+
     @Override
     public void getEmployerByMail(String mail, DataStatus status) {
         List<EmployerModel> ListUpdate = new ArrayList<>();
@@ -151,10 +173,14 @@ public class FirebaseDBHelper implements DBHelper {
         doQuery(query, EmployerModel.class, ListUpdate, status);
     }
 
+
+
     @Override
     public Object getCurrentUser() {
         return mAuth.getCurrentUser();
     }
+
+
 
     @Override
     public void getUserById(String UId, DataStatus status) {
@@ -177,17 +203,17 @@ public class FirebaseDBHelper implements DBHelper {
                     User user = node.getValue(User.class);
                     String role = user.getRole();
                     roleList.add(role);
-
                 }
                 status.dataIsLoaded(roleList, null);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.i("ERROR", databaseError.toString());
             }
         });
     }
+
+
 
     @Override
     public void readStoreOfSpecificUser(String UId, DataStatus status) {
@@ -196,6 +222,8 @@ public class FirebaseDBHelper implements DBHelper {
         Query query = mReference.orderByChild("idEmployer").equalTo(UId);
         doQuery(query,StoreModel.class,storeList,status);
     }
+
+
 
     @Override
     public void addStoreOfScificId(StoreModel model, DataStatus status) {
@@ -206,6 +234,54 @@ public class FirebaseDBHelper implements DBHelper {
              .addOnSuccessListener(x -> status.dataIsLoaded(new ArrayList<StoreModel>(1),null));
      else
          status.dataIsLoaded(null,null);
+    }
+
+
+
+    @Override
+    public void addToketoUser(User user, Context context) {
+        mFirebaseId.getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if(task.isSuccessful()){
+                    String token = task.getResult().getToken();
+                    Log.i("TOKEN", token);
+                    user.setToken(token);
+                    updateUsers(user,user.getId(),context);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getTokenbyMail(String mail, DataStatus status) {
+        Log.i("MAILDB",mail);
+        List<String> tokens = new ArrayList<>();
+        mDatabase.getReference().child(USER).orderByChild("email").equalTo(mail).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot node:snapshot.getChildren()) {
+                    User user = node.getValue(User.class);
+                    tokens.add(user.getToken());
+                    Log.i("TOKENS", tokens.toString());
+                }
+
+
+                status.dataIsLoaded(tokens, null);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    @Override
+    public void addHiringModel(HiringModel model, DataStatus dataStatus) {
+        mDatabase.getReference(STORE).child(model.getIdStore()).child(model.getId()).setValue(model)
+                .addOnCompleteListener(x -> dataStatus.dataIsLoaded(null,null));
     }
 
 
@@ -221,6 +297,18 @@ public class FirebaseDBHelper implements DBHelper {
             });
     }
 
+
+
+    private void updateUsers(User model, String UId, Context context) {
+        mReference = mDatabase.getReference(USER);
+        mReference.child(UId).setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(context,context.getString(R.string.user_updated),Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
 
 
 

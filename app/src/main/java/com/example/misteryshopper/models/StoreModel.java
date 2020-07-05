@@ -1,10 +1,13 @@
 package com.example.misteryshopper.models;
 
-public class StoreModel {
+import java.io.Serializable;
+
+public class StoreModel implements Serializable {
 
 
     String idStore;
     String idEmployer;
+    String employerName;
     String manager;
     String city;
     String address;
@@ -30,6 +33,14 @@ public class StoreModel {
 
     public void setIdEmployer(String idEmployer) {
         this.idEmployer = idEmployer;
+    }
+
+    public String getEmployerName() {
+        return employerName;
+    }
+
+    public void setEmployerName(String employerName) {
+        this.employerName = employerName;
     }
 
     public void setManager(String manager) {

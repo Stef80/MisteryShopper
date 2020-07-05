@@ -13,8 +13,8 @@ import android.widget.Toast;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.EmployerModel;
-import com.example.misteryshopper.utils.DBHelper;
-import com.example.misteryshopper.utils.FirebaseDBHelper;
+import com.example.misteryshopper.datbase.DBHelper;
+import com.example.misteryshopper.datbase.impl.FirebaseDBHelper;
 
 import java.util.List;
 

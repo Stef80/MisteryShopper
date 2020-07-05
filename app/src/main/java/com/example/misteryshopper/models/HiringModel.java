@@ -3,10 +3,12 @@ package com.example.misteryshopper.models;
 import java.time.LocalDate;
 
 public class HiringModel {
-
-    EmployerModel who;
-    String where;
-    LocalDate when;
+    String id;
+    String idEmployer;
+    String employerName;
+    String mailShopper;
+    String idStore;
+    String date;
     double fee;
     boolean accepted;
     boolean done;
@@ -14,28 +16,56 @@ public class HiringModel {
     public HiringModel() {
     }
 
-    public EmployerModel getWho() {
-        return who;
+    public HiringModel(String id, String idEmployer, String employerName, String mailShopper, String idStore,String date, double fee) {
+        this.id = id;
+        this.idEmployer = idEmployer;
+        this.mailShopper = mailShopper;
+        this.idStore = idStore;
+        this.date = date;
+        this.fee = fee;
+        this.employerName = employerName;
+        accepted = false;
+        done = false;
     }
 
-    public void setWho(EmployerModel who) {
-        this.who = who;
+    public String getId() {
+        return id;
     }
 
-    public String getWhere() {
-        return where;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setWhere(String where) {
-        this.where = where;
+    public String getIdEmployer() {
+        return idEmployer;
     }
 
-    public LocalDate getWhen() {
-        return when;
+    public void setIdEmployer(String idEmployer) {
+        this.idEmployer = idEmployer;
     }
 
-    public void setWhen(LocalDate when) {
-        this.when = when;
+    public String getEmployerName() {
+        return employerName;
+    }
+
+    public void setEmployerName(String employerName) {
+        this.employerName = employerName;
+    }
+
+    public String getMailShopper() {
+        return mailShopper;
+    }
+
+    public void setMailShopper(String mailShopper) {
+        this.mailShopper = mailShopper;
+    }
+
+    public String getIdStore() {
+        return idStore;
+    }
+
+    public void setIdStore(String idStore) {
+        this.idStore = idStore;
     }
 
     public double getFee() {
@@ -62,15 +92,11 @@ public class HiringModel {
         this.done = done;
     }
 
-    @Override
-    public String toString() {
-        return "HiringModel{" +
-                "who=" + who +
-                ", where='" + where + '\'' +
-                ", when=" + when +
-                ", fee=" + fee +
-                ", accepted=" + accepted +
-                ", done=" + done +
-                '}';
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

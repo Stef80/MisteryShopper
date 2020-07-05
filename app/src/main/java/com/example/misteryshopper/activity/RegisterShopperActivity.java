@@ -8,13 +8,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.ShopperModel;
-import com.example.misteryshopper.utils.DBHelper;
-import com.example.misteryshopper.utils.FirebaseDBHelper;
+import com.example.misteryshopper.datbase.DBHelper;
+import com.example.misteryshopper.datbase.impl.FirebaseDBHelper;
 
 import java.util.List;
 

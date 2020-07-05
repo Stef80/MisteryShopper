@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "155122074315-0a3sglcoosop6g2rra9t7ks0bshse56d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.misteryshopper",
+            "certificate_hash": "96b580ee62fcaaf6e5bf52c974a514934891e5cf"
+          }
+        },
+        {
           "client_id": "155122074315-6gob2bl9eu5f68dbfq10knv9onaefjdm.apps.googleusercontent.com",
           "client_type": 3
         }

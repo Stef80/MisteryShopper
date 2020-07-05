@@ -2,23 +2,34 @@ package com.example.misteryshopper.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.activity.RegisterEmployerActivity;
 import com.example.misteryshopper.activity.RegisterShopperActivity;
+import com.example.misteryshopper.datbase.DBHelper;
+import com.example.misteryshopper.datbase.impl.FirebaseDBHelper;
 import com.example.misteryshopper.models.EmployerModel;
+import com.example.misteryshopper.models.HiringModel;
 import com.example.misteryshopper.models.StoreModel;
+import com.example.misteryshopper.utils.notification.MessageCreationService;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DialogUIHelper {
@@ -59,7 +70,8 @@ public class DialogUIHelper {
 
     }
 
-    public static void createHireDialog(final StoreModel model, Context context) {
+
+    public static void createStoreDialog(final StoreModel model, Context context) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -88,6 +100,7 @@ public class DialogUIHelper {
                 if(TextUtils.isEmpty(adr))
                     address.setError(context.getString(R.string.field_required));
                 model.setIdStore(id);
+                model.setEmployerName(((EmployerModel)new SharedPrefConfig(context).readLoggedUser()).getEmName());
                 model.setManager(manager.getText().toString());
                 model.setCity(city.getText().toString());
                 model.setAddress(address.getText().toString());
@@ -114,6 +127,61 @@ public class DialogUIHelper {
              }
             }
         });
+        dialog.show();
+    }
+
+
+
+    public static void buildDialogHire(Context context,StoreModel model, String idEmployer,String mailShopper){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_hire, null);
+        AlertDialog dialog = builder.create();
+        dialog.setView(dialogView);
+        DatePicker date = dialogView.findViewById(R.id.date_picker_ref);
+        TextView storeId = dialogView.findViewById(R.id.store_id_ref);
+        TextView shopperMail = dialogView.findViewById(R.id.mail_shopper_ref);
+        TextView address = dialogView.findViewById(R.id.address_store_ref);
+        EditText fee = dialogView.findViewById(R.id.fee_edtxt_ref);
+        Button buttonHire = dialogView.findViewById(R.id.button_hire);
+        dialogView.findViewById(R.id.button_cancel_ref).setOnClickListener(x -> dialog.dismiss());
+
+        storeId.setText(model.getIdStore());
+        address.setText(model.getCity()+"\n"+model.getAddress());
+        shopperMail.setText(mailShopper);
+        date.setMinDate(System.currentTimeMillis());
+
+        buttonHire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               String dateStr = date.getDayOfMonth()+"/"+
+                date.getMonth()+"/"+
+                date.getYear();
+               String feeStr =fee.getText().toString();
+               if(TextUtils.isEmpty(feeStr)){
+                   fee.setError(context.getString(R.string.field_required));
+               }else {
+                   Double feeNumber = Double.valueOf(feeStr);
+                   String now = DateUtils.formatDateTime(context, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_DATE);
+                   HiringModel hiringModel = new HiringModel(now.trim() + idEmployer, model.getEmployerName(),
+                           idEmployer, mailShopper, model.getIdStore(), dateStr, feeNumber);
+
+                   mDBHelper.addHiringModel(hiringModel, new DBHelper.DataStatus() {
+                       @Override
+                       public void dataIsLoaded(List<?> obj, List<String> keys) {
+                           mDBHelper.getTokenbyMail(mailShopper, (obj1, keys1) -> {
+                               Log.i("DILAOGTOKEN", (String) obj1.get(0));
+                               MessageCreationService.buildMessage(context, (String) obj1.get(0),
+                                       context.getString(R.string.notification_of_employment), model.getCity() + "\n" + model.getAddress()
+                                       , dateStr, String.valueOf(feeNumber), model.getEmployerName());
+                           });
+                           dialog.dismiss();
+                       }
+                   });
+               }
+            }
+        });
+
         dialog.show();
     }
 }

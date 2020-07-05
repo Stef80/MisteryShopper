@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Mistery Shopper</string>
     <string name="login">Login</string>
-    <string name="register">Register</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -9,7 +8,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">Welcome !</string>
     <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password_lenght">Password must be >5 characters</string>
+    <string name="invalid_password_lenght">Password must be > 5 characters</string>
     <string name="invalid_password">Password required</string>
     <string name="login_failed">Login failed</string>
     <string name="registration_failed">regitration failed</string>
@@ -26,4 +25,22 @@
     <string name="login_success">login success</string>
     <string name="shop_not_added">shop didn\'t add , plz try again</string>
     <string name="field_required">required field</string>
+    <string name="cancel">Cancel</string>
+    <string name="reg_as_employer">Register as employer</string>
+    <string name="register_as_shopper">Register as shopper</string>
+    <string name="show_shoppers">shoppers available</string>
+    <string name="user_updated">user updated</string>
+    <string name="hire">HIRE</string>
+    <string name="add_fee">fee</string>
+    <string name="hering_request">there is an hering request for you</string>
+    <string name="shoppers">Shopper</string>
+    <string name="place">Where :</string>
+    <string name="when">When :</string>
+    <string name="payment">Fee :</string>
+    <string name="accept">accept</string>
+    <string name="decline">decline</string>
+    <string name="notification_from">from :</string>
+    <string name="notification_of_employment">Notification of employment</string>
+    <string name="details">Expand to see detailes!</string>
+    <string name="show">show</string>
 </resources>

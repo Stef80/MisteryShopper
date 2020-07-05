@@ -35,7 +35,7 @@
                 android:padding="10dp"
                 android:textColorHint="@color/labelAndText"
                 android:textColor="@color/labelAndText"
-                android:background="@drawable/button_shape"/>
+               />
 
         </LinearLayout>
 
@@ -62,8 +62,7 @@
                 android:inputType="textPersonName"
                 android:padding="10dp"
                 android:textColorHint="@color/labelAndText"
-                android:textColor="@color/labelAndText"
-                android:background="@drawable/button_shape"/>
+                android:textColor="@color/labelAndText"/>
         </LinearLayout>
 
         <LinearLayout
@@ -90,7 +89,7 @@
                 android:padding="10dp"
                 android:textColorHint="@color/labelAndText"
                 android:textColor="@color/labelAndText"
-                android:background="@drawable/button_shape"
+               
                 />
         </LinearLayout>
 
@@ -117,7 +116,7 @@
                 android:inputType="text"
                 android:padding="10dp"
                 android:textColor="@color/labelAndText"
-                android:background="@drawable/button_shape"
+               
                 />
         </LinearLayout>
 
@@ -145,7 +144,7 @@
                 android:inputType="textCapWords"
                 android:padding="10dp"
                 android:textColor="@color/labelAndText"
-                android:background="@drawable/button_shape"/>
+               />
         </LinearLayout>
 
         <LinearLayout
@@ -173,7 +172,7 @@
                 android:padding="10dp"
 
                 android:textColor="@color/labelAndText"
-                android:background="@drawable/button_shape"/>
+               />
         </LinearLayout>
 
         <LinearLayout
@@ -198,7 +197,7 @@
                 android:layout_weight="1"
                 android:inputType="textPassword"
                 android:padding="10dp"
-                android:background="@drawable/button_shape"
+               
                 android:textColor="@color/labelAndText"
                 />
         </LinearLayout>
@@ -208,11 +207,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/register"
+            android:text="@string/action_sign_in_short"
             android:visibility="visible"
             android:textSize="18sp"
             android:textColor="@color/labelAndText"
-            android:background="@drawable/button_shape"/>
+            android:background="@drawable/button_shape" />
 
 
 </LinearLayout>

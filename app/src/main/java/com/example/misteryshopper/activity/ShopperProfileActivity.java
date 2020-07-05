@@ -3,7 +3,10 @@ package com.example.misteryshopper.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +18,10 @@ import android.widget.TextView;
 import com.example.misteryshopper.MainActivity;
 import com.example.misteryshopper.R;
 import com.example.misteryshopper.models.ShopperModel;
-import com.example.misteryshopper.models.StoreModel;
-import com.example.misteryshopper.utils.DBHelper;
-import com.example.misteryshopper.utils.DialogUIHelper;
-import com.example.misteryshopper.utils.FirebaseDBHelper;
+import com.example.misteryshopper.datbase.DBHelper;
+import com.example.misteryshopper.datbase.impl.FirebaseDBHelper;
 import com.example.misteryshopper.utils.SharedPrefConfig;
+import com.example.misteryshopper.utils.notification.NotificationHandler;
 
 import java.util.List;
 
@@ -101,7 +103,6 @@ private final String EMAIL = "email";
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

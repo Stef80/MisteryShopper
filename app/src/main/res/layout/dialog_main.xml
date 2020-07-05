@@ -16,7 +16,7 @@
         android:textSize="24dp"
         android:textColor="@color/labelAndText"
         android:textAlignment="center"
-        android:text="@string/register"
+        android:text="@string/action_sign_in_short"
         android:layout_margin="20dp"/>
 
     <LinearLayout
@@ -24,15 +24,6 @@
         android:layout_height="match_parent"
         android:layout_weight="2">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:id="@+id/retry_button"
-            android:textColor="@color/labelAndText"
-            android:background="@drawable/button_shape"
-            android:text="Retry"/>
 
         <Button
             android:layout_width="match_parent"
@@ -42,7 +33,7 @@
             android:textColor="@color/labelAndText"
             android:background="@drawable/button_shape"
             android:id="@+id/reg_shop_button"
-            android:text="Register as Shopper"/>
+            android:text="@string/register_as_shopper"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -51,7 +42,17 @@
             android:textColor="@color/labelAndText"
             android:background="@drawable/button_shape"
             android:id="@+id/reg_empl_button"
-            android:text="Register as Employer"/>
+            android:text="@string/reg_as_employer"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:id="@+id/retry_button"
+            android:textColor="@color/labelAndText"
+            android:background="@drawable/button_shape"
+            android:text="@string/cancel"/>
+
 
     </LinearLayout>
 </LinearLayout>

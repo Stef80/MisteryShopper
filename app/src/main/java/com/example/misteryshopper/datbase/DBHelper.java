@@ -1,8 +1,9 @@
-package com.example.misteryshopper.utils;
+package com.example.misteryshopper.datbase;
 
 import android.content.Context;
 
 import com.example.misteryshopper.exception.InvalidParamsException;
+import com.example.misteryshopper.models.HiringModel;
 import com.example.misteryshopper.models.StoreModel;
 import com.example.misteryshopper.models.User;
 
@@ -35,8 +36,11 @@ public interface DBHelper {
 
     public void addStoreOfScificId(StoreModel model,DataStatus status);
 
+    void addToketoUser(User user, Context context);
 
+    void getTokenbyMail(String mail,DataStatus status);
 
+    void addHiringModel(HiringModel model, DataStatus dataStatus);
 
 
     public interface DataStatus {
